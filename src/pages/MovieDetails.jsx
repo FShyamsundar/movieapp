@@ -18,7 +18,7 @@ export const MovieDetails = () => {
       if (movie?.id) {
         try {
           const API_KEY = import.meta.env.VITE_API_KEY;
-          const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}`);
+          const response = await fetch(`https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}`);
           const data = await response.json();
           setMovieDetails(data);
         } catch (error) {

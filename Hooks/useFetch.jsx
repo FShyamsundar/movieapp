@@ -8,7 +8,7 @@ const useFetch = (apiPath, queryTerm = "") => {
     useEffect(() => {
         if (!apiPath || !key) return;
         
-        const baseUrl = `https://api.themoviedb.org/3/${apiPath}?api_key=${key}`;
+        const baseUrl = `https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/${apiPath}?api_key=${key}`;
         const url = queryTerm ? `${baseUrl}&query=${queryTerm}` : baseUrl;
         
         async function fetchmovies() {
