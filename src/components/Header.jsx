@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 
 export function Header({ onSearch, onFilter, onShowFavorites }) {

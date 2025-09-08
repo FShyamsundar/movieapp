@@ -1,5 +1,5 @@
 import "./App.css";
-import { Header } from "./components/header";
+import { Header } from "./components/Header";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { MovieList } from "./pages/MovieList";
 import { MovieDetails } from "./pages/MovieDetails";
