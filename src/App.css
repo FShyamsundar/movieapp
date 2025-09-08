@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+.pagecontent{
+    margin-top: 50px;
+    margin-left: 100px;
+}
+
+.cards{
+    margin-top: 20px;
+}
+
+.slider-content {
+    margin-left: 80px;
+}
+
+
+
+.title{
+    margin-top: 30px;
+}
+
+.menu{
+    margin-top: 20px;
+}
+
+.view-btn{
+    padding-left: 10px;
+    text-align: center;
+    padding-right: 10px;
+    margin-top: 10px;
+
+}
+.rating{
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+}
+
+.genre{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+}
+.main-logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 100px;
+}
+
+.main-para{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-bar{
+    padding-left: 10px;
+    padding-right: 10px;
+    width: full;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.search-btn{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    background-color: rgb(223, 76, 22);
+}
+
+.filter{
+    padding-left: 10px;
+    padding-right: 10px;
+
+}
+
+.slider{
+    margin-top: 20px;
+}
+
+.movies-list{
+    margin: 20px;
+}
