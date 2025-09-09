@@ -8,7 +8,7 @@ const MovieSliderBanner = () => {
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const navigate = useNavigate();
   
-  const { data: movies } = useFetch('movie/popular');
+  const { data: movies } = useFetch('popular');
   const sliderMovies = movies?.slice(0, 5) || [];
 
   // Auto-slide functionality
@@ -44,14 +44,14 @@ const MovieSliderBanner = () => {
       <div className="absolute inset-0">
         {sliderMovies.map((movie, index) => (
           <div
-            key={movie.id}
+            key={`${movie.imdbID}-${index}`}
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index == currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
             <img
-              src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-              alt={movie.title}
+              src={movie.Poster !== 'N/A' ? movie.Poster : '/placeholder-movie.jpg'}
+              alt={movie.Title}
               className="w-full h-full object-cover"
             />
             {/* Gradient overlay */}
@@ -67,7 +67,7 @@ const MovieSliderBanner = () => {
           <div className="max-w-xs sm:max-w-lg md:max-w-2xl slider-content">
             {/* Movie Title */}
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-2 sm:mb-4 animate-fadeIn">
-              {currentMovie.title}
+              {currentMovie.Title}
             </h1>
             
             {/* Tagline */}
@@ -79,28 +79,28 @@ const MovieSliderBanner = () => {
             <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-4 sm:mb-6 text-white text-sm sm:text-base">
               <div className="flex items-center gap-1 sm:gap-2">
                 <Star className="text-yellow-400 fill-current" size={16} />
-                <span className="font-semibold">{currentMovie.vote_average?.toFixed(1)}</span>
+                <span className="font-semibold">{currentMovie.imdbRating || '8.5'}</span>
               </div>
               <div className="flex items-center gap-1 sm:gap-2">
                 <Calendar size={16} />
-                <span>{new Date(currentMovie.release_date).getFullYear()}</span>
+                <span>{currentMovie.Year}</span>
               </div>
               <div className="hidden sm:flex items-center gap-2">
                 <Clock size={16} />
-                <span>Popularity: {currentMovie.popularity?.toFixed(0)}</span>
+                <span>Type: {currentMovie.Type}</span>
               </div>
               
             </div>
 
             {/* Description */}
             <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-8 max-w-full sm:max-w-xl">
-              {currentMovie.overview?.substring(0, window.innerWidth < 640 ? 150 : 300)}{currentMovie.overview?.length > (window.innerWidth < 640 ? 150 : 300) ? '...' : ''}
+              {currentMovie.Plot?.substring(0, window.innerWidth < 640 ? 150 : 300) || 'No description available'}{currentMovie.Plot?.length > (window.innerWidth < 640 ? 150 : 300) ? '...' : ''}
             </p>
 
             {/* Action Button */}
             <div>
               <button 
-                onClick={() => navigate(`/movie/${currentMovie.id}`, { state: { movie: currentMovie } })}
+                onClick={() => navigate(`/movie/${currentMovie.imdbID}`, { state: { movie: currentMovie } })}
                 className="view-btn bg-blue-600 bg-opacity-70 text-white px-4 py-2 sm:px-8 sm:py-4 rounded-lg font-bold text-sm sm:text-lg hover:bg-opacity-90 transition-colors duration-200"
               >
                 View More

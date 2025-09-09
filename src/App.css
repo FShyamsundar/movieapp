@@ -82,3 +82,26 @@
 .movies-list{
     margin: 20px;
 }
+
+.details-content{
+    margin-left: 350px;
+    padding-bottom: 50px;
+}
+
+.details-top{
+    margin-left: 100px;
+}
+
+@media (max-width: 768px) {
+    .details-content{
+        margin-left: 0;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .details-top{
+        margin-left: 0;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

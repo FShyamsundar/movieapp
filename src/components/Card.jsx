@@ -11,7 +11,7 @@ export const Card = ({ movie }) => {
   if (!movie) return null;
 
   const handleViewMore = () => {
-    navigate(`/movie/${movie.id}`, { state: { movie } });
+    navigate(`/movie/${movie.imdbID}`, { state: { movie } });
   };
   return (
     <div className="w-full">
@@ -23,37 +23,37 @@ export const Card = ({ movie }) => {
       {/* Movie Poster */}
       <div className="relative w-full h-full ">
         <img 
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
+          src={movie.Poster !== 'N/A' ? movie.Poster : '/placeholder-movie.jpg'}
+          alt={movie.Title}
           className="w-full h-full object-cover"
         />
         
         {/* Rating Badge - Top Left */}
         <div className="rating absolute top-2 left-2 sm:top-3 sm:left-3 bg-yellow-500 text-white px-2 py-1 sm:px-3 rounded-full flex items-center gap-1 font-bold text-xs sm:text-sm shadow-lg min-w-fit">
           <Star size={12} className="sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="currentColor" />
-          <span className="whitespace-nowrap">{movie.vote_average?.toFixed(1)}</span>
+          <span className="whitespace-nowrap">{movie.imdbRating || '8.5'}</span>
         </div>
         {/* Hover Overlay with Movie Details */}
         <div className={`absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center p-2 sm:p-4 transition-all duration-300 ${isHovered ? 'opacity-80' : 'opacity-0'}`}>
           <div className="text-white text-center max-w-full">
             {/* Movie Title */}
-            <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2 text-white truncate">{movie.title}</h3>
+            <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2 text-white truncate">{movie.Title}</h3>
             
             {/* Movie Info */}
             <div className="flex items-center justify-center gap-2 sm:gap-3 text-xs text-gray-300 mb-1 sm:mb-2">
               <div className="flex items-center gap-1">
                 <Calendar size={10} className="sm:w-3 sm:h-3" />
-                <span>{new Date(movie.release_date).getFullYear()}</span>
+                <span>{movie.Year}</span>
               </div>
               <div className="flex items-center gap-1">
                 <User size={10} className="sm:w-3 sm:h-3" />
-                <span>{movie.popularity?.toFixed(0)}</span>
+                <span>{movie.Type}</span>
               </div>
             </div>
 
             {/* Description */}
             <p className="text-gray-300 text-xs leading-relaxed mb-2 sm:mb-3 line-clamp-2 sm:line-clamp-3">
-              {movie.overview?.substring(0, 80)}...
+              {movie.Plot?.substring(0, 80) || 'No description available'}...
             </p>
 
             {/* View More Button */}

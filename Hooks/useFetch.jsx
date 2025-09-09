@@ -1,35 +1,43 @@
 import { useEffect, useState } from 'react'
-import React from 'react'
 
-const useFetch = (apiPath, queryTerm = "") => {
+const useFetch = (searchType, queryTerm = "") => {
     const [data, setData] = useState([]);
-    const key = import.meta.env.VITE_API_KEY;
+    const key = "e1a284f5";
     
     useEffect(() => {
-        if (!apiPath || !key) return;
-        
-        const baseUrl = `https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/${apiPath}?api_key=${key}`;
-        const url = queryTerm ? `${baseUrl}&query=${queryTerm}` : baseUrl;
-        
-        async function fetchmovies() {
+        async function fetchMovies() {
             try {
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                let url;
+                if (queryTerm) {
+                    url = `https://www.omdbapi.com/?apikey=${key}&s=${queryTerm}&type=movie`;
+                } else {
+                    const searchTerms = {
+                        'popular': 'action',
+                        'top': 'classic', 
+                        'new': '2025'
+                    };
+                    const searchTerm = searchTerms[searchType] || 'movie';
+                    url = `https://www.omdbapi.com/?apikey=${key}&s=${searchTerm}&type=movie`;
                 }
                 
+                const response = await fetch(url);
                 const result = await response.json();
-                setData(result.results || []);
+                
+                if (result.Response === 'True') {
+                    setData(result.Search || []);
+                } else {
+                    setData([]);
+                }
             } catch (error) {
                 console.error('Error fetching movies:', error);
                 setData([]);
             }
         }
         
-        fetchmovies();
-    }, [apiPath, queryTerm, key]);
-  return {data}
+        fetchMovies();
+    }, [searchType, queryTerm]);
+    
+    return { data };
 };
 
 export default useFetch;

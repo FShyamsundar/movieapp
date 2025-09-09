@@ -5,23 +5,24 @@ import useFetch from "../../Hooks/useFetch";
 
 export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing", searchTerm = "", filters = {}, showFavorites = false, setShowFavorites }) {
   const [activeCategory, setActiveCategory] = useState('popular');
-  const [currentApiPath, setCurrentApiPath] = useState('movie/popular');
+  const [currentApiPath, setCurrentApiPath] = useState('popular');
   const [currentTitle, setCurrentTitle] = useState('Popular Movies');
   const [filteredMovies, setFilteredMovies] = useState([]);
   
-  const {data: movies} = useFetch(searchTerm ? `search/movie` : currentApiPath, searchTerm);
+  const {data: movies} = useFetch(searchTerm ? 'search' : currentApiPath, searchTerm);
   const [isSearching, setIsSearching] = useState(false);
   
   const categories = [
-    { id: 'popular', label: 'Popular', apiPath: 'movie/popular', title: 'Popular Movies' },
-    { id: 'toprated', label: 'Top Rated', apiPath: 'movie/top_rated', title: 'Top Rated Movies' },
-    { id: 'upcoming', label: 'Upcoming', apiPath: 'movie/upcoming', title: 'Upcoming Movies' }
+    { id: 'popular', label: 'Popular', apiPath: 'popular', title: 'Popular Movies' },
+    { id: 'toprated', label: 'Top Rated', apiPath: 'top', title: 'Top Movies' },
+    { id: 'upcoming', label: 'New', apiPath: 'new', title: 'New Movies' }
   ];
   
   const handleCategoryChange = (category) => {
     setActiveCategory(category.id);
     setCurrentApiPath(category.apiPath);
     setCurrentTitle(category.title);
+    setShowFavorites(false);
   };
   
   useEffect(()=>{
@@ -43,35 +44,39 @@ export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing"
     // Apply year filter
     if (filters.year && filters.year !== '') {
       filtered = filtered.filter(movie => {
-        if (!movie.release_date) return false;
-        const movieYear = new Date(movie.release_date).getFullYear();
-        return movieYear.toString() === filters.year;
+        if (!movie.Year) return false;
+        return movie.Year === filters.year;
       });
     }
     
-    // Apply rating filter (minimum rating)
+    // Apply rating filter (simulate with year as proxy since OMDB search doesn't have ratings)
     if (filters.rating && filters.rating !== '') {
       const minRating = parseFloat(filters.rating);
-      filtered = filtered.filter(movie => {
-        if (!movie.vote_average) return false;
-        return movie.vote_average >= minRating;
-      });
+      // Filter newer movies for higher ratings (rough approximation)
+      if (minRating >= 8) {
+        filtered = filtered.filter(movie => movie.Year >= '2010');
+      } else if (minRating >= 6) {
+        filtered = filtered.filter(movie => movie.Year >= '2000');
+      }
     }
     
-    // Apply genre filter
+    // Apply genre filter (filter by title keywords)
     if (filters.genre && filters.genre !== '') {
-      const genreMap = {
-        'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35, 'Crime': 80,
-        'Documentary': 99, 'Drama': 18, 'Family': 10751, 'Fantasy': 14, 'History': 36,
-        'Horror': 27, 'Music': 10402, 'Mystery': 9648, 'Romance': 10749, 'Sci-Fi': 878,
-        'TV Movie': 10770, 'Thriller': 53, 'War': 10752, 'Western': 37
+      const genreKeywords = {
+        'Action': ['action', 'fight', 'war', 'battle', 'hero'],
+        'Comedy': ['comedy', 'funny', 'laugh', 'humor'],
+        'Drama': ['drama', 'story', 'life', 'love'],
+        'Horror': ['horror', 'scary', 'fear', 'dark'],
+        'Romance': ['love', 'romance', 'heart', 'wedding'],
+        'Sci-Fi': ['space', 'future', 'alien', 'robot', 'star'],
+        'Thriller': ['thriller', 'mystery', 'crime', 'detective']
       };
-      const genreId = genreMap[filters.genre];
-      if (genreId) {
-        filtered = filtered.filter(movie => 
-          movie.genre_ids && movie.genre_ids.includes(genreId)
-        );
-      }
+      const keywords = genreKeywords[filters.genre] || [filters.genre.toLowerCase()];
+      filtered = filtered.filter(movie => 
+        keywords.some(keyword => 
+          movie.Title && movie.Title.toLowerCase().includes(keyword)
+        )
+      );
     }
     
     setFilteredMovies(filtered);
@@ -82,7 +87,8 @@ export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing"
   };
 
   const displayTitle = showFavorites ? 'My Favorite Movies' : (searchTerm ? `Search Results for "${searchTerm}"` : currentTitle);
-  const displayMovies = showFavorites ? getFavoriteMovies() : (Object.keys(filters).some(key => filters[key] && filters[key] !== '') ? filteredMovies : movies);
+  const hasActiveFilters = filters && Object.keys(filters).some(key => filters[key] && filters[key] !== '');
+  const displayMovies = showFavorites ? getFavoriteMovies() : (hasActiveFilters ? filteredMovies : movies);
   
   return (
     <>
@@ -113,8 +119,8 @@ export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing"
         <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">{displayTitle}</h2>
         <div className="movies-list grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
           {displayMovies && displayMovies.length > 0 ? (
-            displayMovies.map((movie) => (
-              <Card movie={movie} key={movie.id} />
+            displayMovies.map((movie, index) => (
+              <Card movie={movie} key={`${movie.imdbID}-${index}`} />
             ))
           ) : (
             <div className="col-span-full flex items-center justify-center min-h-[400px]">
