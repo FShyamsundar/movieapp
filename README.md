@@ -1,6 +1,6 @@
 # Movie Hub 🎬
 
-A modern, responsive movie discovery application built with React and Vite, powered by The Movie Database (TMDB) API.
+A modern, responsive movie discovery application built with React and Vite, powered by The Open Movie Database (OMDB) API.
 
 ## Features
 
@@ -20,7 +20,7 @@ A modern, responsive movie discovery application built with React and Vite, powe
 - **Routing**: React Router DOM
 - **Icons**: Lucide React
 - **Slider**: Swiper.js
-- **API**: The Movie Database (TMDB) API
+- **API**: The Open Movie Database (OMDB) API
 - **Storage**: Local Storage for favorites and ratings
 
 ## Installation
@@ -36,12 +36,11 @@ cd movieapp
 npm install
 ```
 
-3. Create a `.env` file in the root directory and add your TMDB API key:
-```env
-VITE_API_KEY=your_tmdb_api_key_here
-```
+3. Get your free OMDB API key from [OMDB API](http://www.omdbapi.com/apikey.aspx)
 
-4. Start the development server:
+4. Update the API key in `Hooks/useFetch.jsx` file
+
+5. Start the development server:
 ```bash
 npm run dev
 ```
@@ -77,11 +76,10 @@ src/
 
 ## API Integration
 
-This project uses The Movie Database (TMDB) API v3. You'll need to:
+This project uses The Open Movie Database (OMDB) API. You'll need to:
 
-1. Create an account at [TMDB](https://www.themoviedb.org/)
-2. Generate an API key from your account settings
-3. Add the API key to your `.env` file
+1. Get your free API key at [OMDB API](http://www.omdbapi.com/apikey.aspx)
+2. Replace the API key in `Hooks/useFetch.jsx` file
 
 ## Build
 
@@ -104,6 +102,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-- [The Movie Database (TMDB)](https://www.themoviedb.org/) for providing the movie data API
+- [The Open Movie Database (OMDB)](http://www.omdbapi.com/) for providing the movie data API
 - [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
 - [Lucide React](https://lucide.dev/) for the beautiful icons

@@ -3,6 +3,16 @@ import { Card } from "../components/Card";
 import MovieSliderBanner from "../components/Slider";
 import useFetch from "../../Hooks/useFetch";
 
+const GENRE_KEYWORDS = {
+  'Action': ['action', 'fight', 'war', 'battle', 'hero'],
+  'Comedy': ['comedy', 'funny', 'laugh', 'humor'],
+  'Drama': ['drama', 'story', 'life', 'love'],
+  'Horror': ['horror', 'scary', 'fear', 'dark'],
+  'Romance': ['love', 'romance', 'heart', 'wedding'],
+  'Sci-Fi': ['space', 'future', 'alien', 'robot', 'star'],
+  'Thriller': ['thriller', 'mystery', 'crime', 'detective']
+};
+
 export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing", searchTerm = "", filters = {}, showFavorites = false, setShowFavorites }) {
   const [activeCategory, setActiveCategory] = useState('popular');
   const [currentApiPath, setCurrentApiPath] = useState('popular');
@@ -62,16 +72,7 @@ export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing"
     
     // Apply genre filter (filter by title keywords)
     if (filters.genre && filters.genre !== '') {
-      const genreKeywords = {
-        'Action': ['action', 'fight', 'war', 'battle', 'hero'],
-        'Comedy': ['comedy', 'funny', 'laugh', 'humor'],
-        'Drama': ['drama', 'story', 'life', 'love'],
-        'Horror': ['horror', 'scary', 'fear', 'dark'],
-        'Romance': ['love', 'romance', 'heart', 'wedding'],
-        'Sci-Fi': ['space', 'future', 'alien', 'robot', 'star'],
-        'Thriller': ['thriller', 'mystery', 'crime', 'detective']
-      };
-      const keywords = genreKeywords[filters.genre] || [filters.genre.toLowerCase()];
+      const keywords = GENRE_KEYWORDS[filters.genre] || [filters.genre.toLowerCase()];
       filtered = filtered.filter(movie => 
         keywords.some(keyword => 
           movie.Title && movie.Title.toLowerCase().includes(keyword)
@@ -83,7 +84,12 @@ export function MovieList({ title = "Now Playing", apiPath = "movie/now_playing"
   }, [movies, filters]);
 
   const getFavoriteMovies = () => {
-    return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
+    try {
+      return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
+    } catch (error) {
+      console.error('Error parsing favorites from localStorage:', error);
+      return [];
+    }
   };
 
   const displayTitle = showFavorites ? 'My Favorite Movies' : (searchTerm ? `Search Results for "${searchTerm}"` : currentTitle);

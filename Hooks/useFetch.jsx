@@ -1,43 +1,58 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+
+const SEARCH_TERMS = {
+    'popular': 'action',
+    'top': 'classic', 
+    'new': '2025'
+};
 
 const useFetch = (searchType, queryTerm = "") => {
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const key = "e1a284f5";
     
-    useEffect(() => {
-        async function fetchMovies() {
-            try {
-                let url;
-                if (queryTerm) {
-                    url = `https://www.omdbapi.com/?apikey=${key}&s=${queryTerm}&type=movie`;
-                } else {
-                    const searchTerms = {
-                        'popular': 'action',
-                        'top': 'classic', 
-                        'new': '2025'
-                    };
-                    const searchTerm = searchTerms[searchType] || 'movie';
-                    url = `https://www.omdbapi.com/?apikey=${key}&s=${searchTerm}&type=movie`;
-                }
-                
-                const response = await fetch(url);
-                const result = await response.json();
-                
-                if (result.Response === 'True') {
-                    setData(result.Search || []);
-                } else {
-                    setData([]);
-                }
-            } catch (error) {
-                console.error('Error fetching movies:', error);
-                setData([]);
-            }
-        }
+    const fetchMovies = useCallback(async () => {
+        if (loading) return;
         
-        fetchMovies();
-    }, [searchType, queryTerm]);
+        setLoading(true);
+        setError(null);
+        
+        try {
+            let url;
+            if (queryTerm) {
+                url = `https://www.omdbapi.com/?apikey=${key}&s=${queryTerm}&type=movie`;
+            } else {
+                const searchTerm = SEARCH_TERMS[searchType] || 'movie';
+                url = `https://www.omdbapi.com/?apikey=${key}&s=${searchTerm}&type=movie`;
+            }
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.Response === 'True') {
+                setData(result.Search || []);
+            } else {
+                setData([]);
+                setError(result.Error || 'No movies found');
+            }
+        } catch (error) {
+            setError(error.message || 'Failed to fetch movies');
+            setData([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [searchType, queryTerm, loading, key]);
     
-    return { data };
+    useEffect(() => {
+        fetchMovies();
+    }, [fetchMovies]);
+    
+    return { data, loading, error };
 };
 
 export default useFetch;

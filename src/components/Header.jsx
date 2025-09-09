@@ -8,7 +8,7 @@ export function Header({ onSearch, onFilter, onShowFavorites }) {
     year: '',
     rating: ''
   });
-  const [favoriteCount, setFavoriteCount] = useState(0);
+
 
   const genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller'];
   const years = Array.from({length: 35}, (_, i) => (2024 - i).toString());
@@ -58,22 +58,7 @@ export function Header({ onSearch, onFilter, onShowFavorites }) {
     }
   };
 
-  useEffect(() => {
-    const updateFavoriteCount = () => {
-      const favorites = JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
-      setFavoriteCount(favorites.length);
-    };
-    
-    updateFavoriteCount();
-    
-    // Custom event listener for favorite changes
-    const handleFavoriteChange = () => updateFavoriteCount();
-    window.addEventListener('favoriteChanged', handleFavoriteChange);
-    
-    return () => {
-      window.removeEventListener('favoriteChanged', handleFavoriteChange);
-    };
-  }, []);
+
 
   return (
     <>

@@ -46,7 +46,7 @@ const MovieSliderBanner = () => {
           <div
             key={`${movie.imdbID}-${index}`}
             className={`absolute inset-0 transition-opacity duration-1000 ${
-              index == currentSlide ? 'opacity-100' : 'opacity-0'
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
             <img
